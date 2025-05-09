@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>All-in-One Converter</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: #f5f7fa;
+    color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 10px;
+  }
+  #app {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 350px;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    background: #4a90e2;
+    color: white;
+    padding: 15px 20px;
+    font-weight: 600;
+    font-size: 1.25rem;
+    text-align: center;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    background: #e3e8f4;
+    border-bottom: 1px solid #ccc;
+  }
+  nav button {
+    flex: 1 1 50%;
+    padding: 10px;
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #555;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+  }
+  nav button.active {
+    background: #6190c5;
+    color: rgb(120, 239, 134);
+  }
+  main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 20px;
+  }
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  select, input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin: 5px 0 15px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .output {
+    background: #f0f4ff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #2a3f9e;
+    min-height: 48px;
+  }
+  .desc {
+    font-size: 0.8rem;
+    color: #777;
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
+  .footer {
+    padding: 10px 20px;
+    background: #e3e8f4;
+    font-size: 0.75rem;
+    color: #444;
+    text-align: center;
+  }
+  /* Scrollbar styling for main */
+  main::-webkit-scrollbar {
+    width: 6px;
+  }
+  main::-webkit-scrollbar-thumb {
+    background-color: #4a90e2;
+    border-radius: 3px;
+  }
+  /* Responsive fixes */
+  @media (max-width: 350px) {
+    header {
+      font-size: 1.1rem;
+      padding: 12px 15px;
+    }
+    nav button {
+      font-size: 0.75rem;
+      padding: 8px;
+    }
+    .output {
+      font-size: 1.1rem;
+      padding: 10px 12px;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="app" role="main" aria-label="All-in-One Unit Converter">
+  <header>All-in-One Converter</header>
+  <nav role="tablist" aria-label="Conversion Categories">
+    <button type="button" role="tab" aria-selected="true" data-tab="currency" class="active">Currency</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="length">Length</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="mass">Mass</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="area">Area</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="time">Time</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="data">Data</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="discount">Discount</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="volume">Volume</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="numeral">Numeral</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="speed">Speed</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="temperature">Temperature</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="bmi">BMI</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="gst">GST</button>
+  </nav>
+  <main>
+    <!-- Currency Converter -->
+    <section id="currency" class="tab-content" role="tabpanel" aria-hidden="false">
+      <label for="curAmount">Amount</label>
+      <input type="number" id="curAmount" min="0" step="any" inputmode="decimal" aria-describedby="curDesc" />
+      <label for="curFrom">From</label>
+      <select id="curFrom" aria-describedby="curDesc">
+        <option value="USD">USD - US Dollar</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="INR">INR - Indian Rupee</option>
+        <option value="GBP">GBP - British Pound</option>
+        <option value="JPY">JPY - Japanese Yen</option>
+        <option value="AUD">AUD - Australian Dollar</option>
+        <option value="CAD">CAD - Canadian Dollar</option>
+        <option value="CNY">CNY - Chinese Yuan</option>
+      </select>
+      <label for="curTo">To</label>
+      <select id="curTo" aria-describedby="curDesc">
+        <option value="USD">USD - US Dollar</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="INR">INR - Indian Rupee</option>
+        <option value="GBP">GBP - British Pound</option>
+        <option value="JPY">JPY - Japanese Yen</option>
+        <option value="AUD">AUD - Australian Dollar</option>
+        <option value="CAD">CAD - Canadian Dollar</option>
+        <option value="CNY">CNY - Chinese Yuan</option>
+      </select>
+      <div id="currencyOutput" class="output" aria-live="polite" aria-atomic="true">Enter amount and select currencies</div>
+      <div id="curDesc" class="desc">Rates updated manually (approximate)</div>
+    </section>
+
+    <!-- Length Converter -->
+    <section id="length" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="lenAmount">Length</label>
+      <input type="number" id="lenAmount" min="0" step="any" inputmode="decimal" />
+      <label for="lenFrom">From</label>
+      <select id="lenFrom">
+        <option value="m">Meter (m)</option>
+        <option value="km">Kilometer (km)</option>
+        <option value="cm">Centimeter (cm)</option>
+        <option value="mm">Millimeter (mm)</option>
+        <option value="mi">Mile (mi)</option>
+        <option value="yd">Yard (yd)</option>
+        <option value="ft">Foot (ft)</option>
+        <option value="in">Inch (in)</option>
+      </select>
+      <label for="lenTo">To</label>
+      <select id="lenTo">
+        <option value="m">Meter (m)</option>
+        <option value="km">Kilometer (km)</option>
+        <option value="cm">Centimeter (cm)</option>
+        <option value="mm">Millimeter (mm)</option>
+        <option value="mi">Mile (mi)</option>
+        <option value="yd">Yard (yd)</option>
+        <option value="ft">Foot (ft)</option>
+        <option value="in">Inch (in)</option>
+      </select>
+      <div id="lengthOutput" class="output" aria-live="polite" aria-atomic="true">Enter length and select units</div>
+    </section>
+
+    <!-- Mass Converter -->
+    <section id="mass" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="massAmount">Mass</label>
+      <input type="number" id="massAmount" min="0" step="any" inputmode="decimal" />
+      <label for="massFrom">From</label>
+      <select id="massFrom">
+        <option value="kg">Kilogram (kg)</option>
+        <option value="g">Gram (g)</option>
+        <option value="mg">Milligram (mg)</option>
+        <option value="lb">Pound (lb)</option>
+        <option value="oz">Ounce (oz)</option>
+      </select>
+      <label for="massTo">To</label>
+      <select id="massTo">
+        <option value="kg">Kilogram (kg)</option>
+        <option value="g">Gram (g)</option>
+        <option value="mg">Milligram (mg)</option>
+        <option value="lb">Pound (lb)</option>
+        <option value="oz">Ounce (oz)</option>
+      </select>
+      <div id="massOutput" class="output" aria-live="polite" aria-atomic="true">Enter mass and select units</div>
+    </section>
+
+    <!-- Area Converter -->
+    <section id="area" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="areaAmount">Area</label>
+      <input type="number" id="areaAmount" min="0" step="any" inputmode="decimal" />
+      <label for="areaFrom">From</label>
+      <select id="areaFrom">
+        <option value="m2">Square Meter (m²)</option>
+        <option value="km2">Square Kilometer (km²)</option>
+        <option value="cm2">Square Centimeter (cm²)</option>
+        <option value="mm2">Square Millimeter (mm²)</option>
+        <option value="ac">Acre (ac)</option>
+        <option value="ha">Hectare (ha)</option>
+        <option value="ft2">Square Foot (ft²)</option>
+        <option value="yd2">Square Yard (yd²)</option>
+      </select>
+      <label for="areaTo">To</label>
+      <select id="areaTo">
+        <option value="m2">Square Meter (m²)</option>
+        <option value="km2">Square Kilometer (km²)</option>
+        <option value="cm2">Square Centimeter (cm²)</option>
+        <option value="mm2">Square Millimeter (mm²)</option>
+        <option value="ac">Acre (ac)</option>
+        <option value="ha">Hectare (ha)</option>
+        <option value="ft2">Square Foot (ft²)</option>
+        <option value="yd2">Square Yard (yd²)</option>
+      </select>
+      <div id="areaOutput" class="output" aria-live="polite" aria-atomic="true">Enter area and select units</div>
+    </section>
+
+    <!-- Time Converter -->
+    <section id="time" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="timeAmount">Time</label>
+      <input type="number" id="timeAmount" min="0" step="any" inputmode="decimal" />
+      <label for="timeFrom">From</label>
+      <select id="timeFrom">
+        <option value="s">Second (s)</option>
+        <option value="min">Minute (min)</option>
+        <option value="h">Hour (h)</option>
+        <option value="d">Day (d)</option>
+        <option value="wk">Week (wk)</option>
+        <option value="mo">Month (mo) (30.44 days)</option>
+        <option value="yr">Year (yr) (365.25 days)</option>
+      </select>
+      <label for="timeTo">To</label>
+      <select id="timeTo">
+        <option value="s">Second (s)</option>
+        <option value="min">Minute (min)</option>
+        <option value="h">Hour (h)</option>
+        <option value="d">Day (d)</option>
+        <option value="wk">Week (wk)</option>
+        <option value="mo">Month (mo) (30.44 days)</option>
+        <option value="yr">Year (yr) (365.25 days)</option>
+      </select>
+      <div id="timeOutput" class="output" aria-live="polite" aria-atomic="true">Enter time and select units</div>
+    </section>
+
+    <!-- Data Converter -->
+    <section id="data" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="dataAmount">Data Size</label>
+      <input type="number" id="dataAmount" min="0" step="any" inputmode="decimal" />
+      <label for="dataFrom">From</label>
+      <select id="dataFrom">
+        <option value="b">Bit (b)</option>
+        <option value="B">Byte (B)</option>
+        <option value="Kb">Kilobit (Kb)</option>
+        <option value="KB">Kilobyte (KB)</option>
+        <option value="Mb">Megabit (Mb)</option>
+        <option value="MB">Megabyte (MB)</option>
+        <option value="Gb">Gigabit (Gb)</option>
+        <option value="GB">Gigabyte (GB)</option>
+        <option value="Tb">Terabit (Tb)</option>
+        <option value="TB">Terabyte (TB)</option>
+      </select>
+      <label for="dataTo">To</label>
+      <select id="dataTo">
+        <option value="b">Bit (b)</option>
+        <option value="B">Byte (B)</option>
+        <option value="Kb">Kilobit (Kb)</option>
+        <option value="KB">Kilobyte (KB)</option>
+        <option value="Mb">Megabit (Mb)</option>
+        <option value="MB">Megabyte (MB)</option>
+        <option value="Gb">Gigabit (Gb)</option>
+        <option value="GB">Gigabyte (GB)</option>
+        <option value="Tb">Terabit (Tb)</option>
+        <option value="TB">Terabyte (TB)</option>
+      </select>
+      <div id="dataOutput" class="output" aria-live="polite" aria-atomic="true">Enter data size and select units</div>
+    </section>
+
+    <!-- Discount Calculator -->
+    <section id="discount" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="discountPrice">Original Price</label>
+      <input type="number" id="discountPrice" min="0" step="any" inputmode="decimal" />
+      <label for="discountPercent">Discount %</label>
+      <input type="number" id="discountPercent" min="0" max="100" step="any" inputmode="decimal" />
+      <div id="discountOutput" class="output" aria-live="polite" aria-atomic="true">Enter price and discount %</div>
+    </section>
+
+    <!-- Volume Converter -->
+    <section id="volume" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="volAmount">Volume</label>
+      <input type="number" id="volAmount" min="0" step="any" inputmode="decimal" />
+      <label for="volFrom">From</label>
+      <select id="volFrom">
+        <option value="m3">Cubic Meter (m³)</option>
+        <option value="L">Liter (L)</option>
+        <option value="mL">Milliliter (mL)</option>
+        <option value="ft3">Cubic Foot (ft³)</option>
+        <option value="in3">Cubic Inch (in³)</option>
+        <option value="gal">Gallon (US liquid)</option>
+        <option value="qt">Quart (US liquid)</option>
+        <option value="pt">Pint (US liquid)</option>
+      </select>
+      <label for="volTo">To</label>
+      <select id="volTo">
+        <option value="m3">Cubic Meter (m³)</option>
+        <option value="L">Liter (L)</option>
+        <option value="mL">Milliliter (mL)</option>
+        <option value="ft3">Cubic Foot (ft³)</option>
+        <option value="in3">Cubic Inch (in³)</option>
+        <option value="gal">Gallon (US liquid)</option>
+        <option value="qt">Quart (US liquid)</option>
+        <option value="pt">Pint (US liquid)</option>
+      </select>
+      <div id="volumeOutput" class="output" aria-live="polite" aria-atomic="true">Enter volume and select units</div>
+    </section>
+
+    <!-- Numeral System Converter -->
+    <section id="numeral" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="numInput">Number</label>
+      <input type="text" id="numInput" inputmode="text" aria-describedby="numDesc" placeholder="Enter number" />
+      <label for="numFrom">From</label>
+      <select id="numFrom" aria-describedby="numDesc">
+        <option value="decimal">Decimal</option>
+        <option value="binary">Binary</option>
+        <option value="octal">Octal</option>
+        <option value="hex">Hexadecimal</option>
+      </select>
+      <label for="numTo">To</label>
+      <select id="numTo" aria-describedby="numDesc">
+        <option value="decimal">Decimal</option>
+        <option value="binary">Binary</option>
+        <option value="octal">Octal</option>
+        <option value="hex">Hexadecimal</option>
+      </select>
+      <div id="numeralOutput" class="output" aria-live="polite" aria-atomic="true">Enter number and select numeral systems</div>
+      <div id="numDesc" class="desc">
+        For non-decimal inputs, use valid digits only (e.g. binary: 0-1, hex: 0-9,A-F).
+      </div>
+    </section>
+
+    <!-- Speed Converter -->
+    <section id="speed" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="speedAmount">Speed</label>
+      <input type="number" id="speedAmount" min="0" step="any" inputmode="decimal" />
+      <label for="speedFrom">From</label>
+      <select id="speedFrom">
+        <option value="m/s">Meters/Second (m/s)</option>
+        <option value="km/h">Kilometers/Hour (km/h)</option>
+        <option value="mph">Miles/Hour (mph)</option>
+        <option value="ft/s">Feet/Second (ft/s)</option>
+        <option value="knots">Knots (kn)</option>
+      </select>
+      <label for="speedTo">To</label>
+      <select id="speedTo">
+        <option value="m/s">Meters/Second (m/s)</option>
+        <option value="km/h">Kilometers/Hour (km/h)</option>
+        <option value="mph">Miles/Hour (mph)</option>
+        <option value="ft/s">Feet/Second (ft/s)</option>
+        <option value="knots">Knots (kn)</option>
+      </select>
+      <div id="speedOutput" class="output" aria-live="polite" aria-atomic="true">Enter speed and select units</div>
+    </section>
+
+    <!-- Temperature Converter -->
+    <section id="temperature" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="tempAmount">Temperature</label>
+      <input type="number" id="tempAmount" step="any" inputmode="decimal" />
+      <label for="tempFrom">From</label>
+      <select id="tempFrom">
+        <option value="c">Celsius (°C)</option>
+        <option value="f">Fahrenheit (°F)</option>
+        <option value="k">Kelvin (K)</option>
+      </select>
+      <label for="tempTo">To</label>
+      <select id="tempTo">
+        <option value="c">Celsius (°C)</option>
+        <option value="f">Fahrenheit (°F)</option>
+        <option value="k">Kelvin (K)</option>
+      </select>
+      <div id="tempOutput" class="output" aria-live="polite" aria-atomic="true">Enter temperature and select units</div>
+    </section>
+
+    <!-- BMI Calculator -->
+    <section id="bmi" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="bmiWeight">Weight (kg)</label>
+      <input type="number" id="bmiWeight" min="0" step="any" inputmode="decimal" />
+      <label for="bmiHeight">Height (cm)</label>
+      <input type="number" id="bmiHeight" min="0" step="any" inputmode="decimal" />
+      <div id="bmiOutput" class="output" aria-live="polite" aria-atomic="true">Enter weight and height</div>
+    </section>
+
+    <!-- GST Calculator -->
+    <section id="gst" class="tab-content" role="tabpanel" aria-hidden="true" hidden>
+      <label for="gstPrice">Original Price</label>
+      <input type="number" id="gstPrice" min="0" step="any" inputmode="decimal" />
+      <label for="gstPercent">GST %</label>
+      <input type="number" id="gstPercent" min="0" step="any" inputmode="decimal" />
+      <div id="gstOutput" class="output" aria-live="polite" aria-atomic="true">Enter price and GST %</div>
+    </section>
+  </main>
+  <div class="footer">All-in-One Unit Converter — Mobile Responsive &amp; Modern Design</div>
+</div>
+
+<script>
+  (function(){
+    // Tab switching
+    const tabs = document.querySelectorAll('nav button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        tabContents.forEach(section => {
+          if(section.id === tab.dataset.tab){
+            section.removeAttribute('hidden');
+            section.setAttribute('aria-hidden', 'false');
+          } else {
+            section.setAttribute('hidden', '');
+            section.setAttribute('aria-hidden', 'true');
+          }
+        });
+      });
+    });
+
+    // Currency conversion rates relative to USD (approximate)
+    // Rates are static for demo only; values approx as of 2024
+    const currencyRates = {
+      USD: 1,
+      EUR: 0.92,
+      INR: 82,
+      GBP: 0.81,
+      JPY: 133,
+      AUD: 1.45,
+      CAD: 1.34,
+      CNY: 7.3
+    };
+
+    // Length units in meters
+    const lengthUnits = {
+      m: 1,
+      km: 1000,
+      cm: 0.01,
+      mm: 0.001,
+      mi: 1609.344,
+      yd: 0.9144,
+      ft: 0.3048,
+      in: 0.0254
+    };
+
+    // Mass units in kilograms
+    const massUnits = {
+      kg: 1,
+      g: 0.001,
+      mg: 0.000001,
+      lb: 0.45359237,
+      oz: 0.0283495231
+    };
+
+    // Area units in square meters
+    const areaUnits = {
+      m2: 1,
+      km2: 1000000,
+      cm2: 0.0001,
+      mm2: 0.000001,
+      ac: 4046.8564224,
+      ha: 10000,
+      ft2: 0.09290304,
+      yd2: 0.83612736
+    };
+
+    // Time units in seconds
+    const timeUnits = {
+      s: 1,
+      min: 60,
+      h: 3600,
+      d: 86400,
+      wk: 604800,
+      mo: 2629800, // average month 30.44 days
+      yr: 31557600 // average year 365.25 days
+    };
+
+    // Data units in bits
+    const dataUnits = {
+      b: 1,
+      B: 8,
+      Kb: 1000,
+      KB: 8000,
+      Mb: 1000000,
+      MB: 8000000,
+      Gb: 1000000000,
+      GB: 8000000000,
+      Tb: 1000000000000,
+      TB: 8000000000000
+    };
+
+    // Volume units in cubic meters
+    const volumeUnits = {
+      m3: 1,
+      L: 0.001,
+      mL: 0.000001,
+      ft3: 0.0283168466,
+      in3: 0.0000163871,
+      gal: 0.00378541,
+      qt: 0.000946353,
+      pt: 0.000473176
+    };
+
+    // Speed units in meters per second
+    const speedUnits = {
+      "m/s": 1,
+      "km/h": 1000/3600,
+      "mph": 1609.344/3600,
+      "ft/s": 0.3048,
+      "knots": 1852/3600
+    };
+
+    /* Helper numeric formatting */
+    function fmt(num){
+      if(isNaN(num) || !isFinite(num)) return "Invalid";
+      if(Math.abs(num) < 0.000001) return num.toExponential(3);
+      return Number(num.toFixed(6)).toString();
+    }
+
+    // Currency converter logic
+    function convertCurrency(){
+      const amount = parseFloat(document.getElementById('curAmount').value);
+      const from = document.getElementById('curFrom').value;
+      const to = document.getElementById('curTo').value;
+      const output = document.getElementById('currencyOutput');
+      if(isNaN(amount) || amount < 0){
+        output.textContent = "Please enter a valid amount";
+        return;
+      }
+      let usdAmount = amount / currencyRates[from];
+      let converted = usdAmount * currencyRates[to];
+      output.textContent = `${fmt(amount)} ${from} = ${fmt(converted)} ${to}`;
+    }
+
+    // Generic unit converter with base units
+    function convertGeneric(amountId, fromId, toId, unitsObj, outputId){
+      const amount = parseFloat(document.getElementById(amountId).value);
+      const from = document.getElementById(fromId).value;
+      const to = document.getElementById(toId).value;
+      const output = document.getElementById(outputId);
+      if(isNaN(amount) || amount < 0){
+        output.textContent = "Please enter a valid amount";
+        return;
+      }
+      let base = amount * unitsObj[from];
+      let converted = base / unitsObj[to];
+      output.textContent = `${fmt(amount)} ${from} = ${fmt(converted)} ${to}`;
+    }
+
+    // Discount calculator
+    function calculateDiscount(){
+      const price = parseFloat(document.getElementById('discountPrice').value);
+      const discount = parseFloat(document.getElementById('discountPercent').value);
+      const output = document.getElementById('discountOutput');
+      if(isNaN(price) || price < 0){
+        output.textContent = "Please enter a valid price";
+        return;
+      }
+      if(isNaN(discount) || discount < 0 || discount > 100){
+        output.textContent = "Please enter a valid discount % (0-100)";
+        return;
+      }
+      const discAmount = (discount / 100) * price;
+      const finalPrice = price - discAmount;
+      output.textContent = `Original: ₹${fmt(price)} | Discount: ${fmt(discount)}% | Price after discount: ₹${fmt(finalPrice)}`;
+    }
+
+    // Numeral system converter helper
+    function baseParse(numStr, base){
+      try {
+        if(numStr.trim()==="") return NaN;
+        return parseInt(numStr, base);
+      } catch {
+        return NaN;
+      }
+    }
+    function convertNumeral(){
+      const numInput = document.getElementById('numInput').value.trim();
+      const from = document.getElementById('numFrom').value;
+      const to = document.getElementById('numTo').value;
+      const output = document.getElementById('numeralOutput');
+
+      // Validate input for each base
+      const validPatterns = {
+        binary: /^[01]+$/i,
+        octal: /^[0-7]+$/i,
+        decimal: /^\d+$/i,
+        hex: /^[0-9a-f]+$/i
+      };
+      if(!validPatterns[from].test(numInput)){
+        output.textContent = `Invalid input for ${from} numeral system`;
+        return;
+      }
+      let decimalNum = parseInt(numInput, getBase(from));
+      if(isNaN(decimalNum)){
+        output.textContent = `Invalid number`;
+        return;
+      }
+      let result = formatNum(decimalNum, to);
+      output.textContent = `${numInput} (${from}) = ${result} (${to})`;
+
+      function getBase(sys){
+        switch(sys){
+          case 'binary': return 2;
+          case 'octal': return 8;
+          case 'decimal': return 10;
+          case 'hex': return 16;
+          default: return 10;
+        }
+      }
+      function formatNum(num, sys){
+        switch(sys){
+          case 'binary': return num.toString(2);
+          case 'octal': return num.toString(8);
+          case 'decimal': return num.toString(10);
+          case 'hex': return num.toString(16).toUpperCase();
+          default: return num.toString(10);
+        }
+      }
+    }
+
+    // Temperature converter
+    function convertTemp(){
+      const temp = parseFloat(document.getElementById('tempAmount').value);
+      const from = document.getElementById('tempFrom').value;
+      const to = document.getElementById('tempTo').value;
+      const output = document.getElementById('tempOutput');
+
+      if(isNaN(temp)){
+        output.textContent = "Please enter a valid temperature";
+        return;
+      }
+
+      let celsius = 0;
+      // convert input to Celsius
+      switch(from){
+        case 'c': celsius = temp; break;
+        case 'f': celsius = (temp - 32) * 5/9; break;
+        case 'k': celsius = temp - 273.15; break;
+      }
+      let converted = 0;
+      // convert Celsius to target
+      switch(to){
+        case 'c': converted = celsius; break;
+        case 'f': converted = (celsius * 9/5) + 32; break;
+        case 'k': converted = celsius + 273.15; break;
+      }
+      output.textContent = `${fmt(temp)}°${from.toUpperCase()} = ${fmt(converted)}°${to.toUpperCase()}`;
+    }
+
+    // BMI Calculator
+    function calculateBMI(){
+      const weight = parseFloat(document.getElementById('bmiWeight').value); // kg
+      const heightCm = parseFloat(document.getElementById('bmiHeight').value); // cm
+      const output = document.getElementById('bmiOutput');
+
+      if(isNaN(weight) || weight <= 0){
+        output.textContent = "Please enter a valid weight";
+        return;
+      }
+      if(isNaN(heightCm) || heightCm <= 0){
+        output.textContent = "Please enter a valid height";
+        return;
+      }
+      const heightM = heightCm / 100;
+      const bmi = weight / (heightM * heightM);
+      let category = "";
+      if(bmi < 18.5) category= "Underweight";
+      else if(bmi < 25) category= "Normal weight";
+      else if(bmi < 30) category= "Overweight";
+      else category= "Obese";
+      output.textContent = `BMI: ${fmt(bmi)} (${category})`;
+    }
+
+    // GST Calculator
+    function calculateGST(){
+      const price = parseFloat(document.getElementById('gstPrice').value);
+      const gst = parseFloat(document.getElementById('gstPercent').value);
+      const output = document.getElementById('gstOutput');
+
+      if(isNaN(price) || price < 0){
+        output.textContent = "Please enter a valid price";
+        return;
+      }
+      if(isNaN(gst) || gst < 0){
+        output.textContent = "Please enter a valid GST %";
+        return;
+      }
+      const gstAmount = price * (gst/100);
+      const total = price + gstAmount;
+      output.textContent = `Original: ₹${fmt(price)} | GST: ${fmt(gst)}% | GST Amount: ₹${fmt(gstAmount)} | Total: ₹${fmt(total)}`;
+    }
+
+    // Event binding helper
+    function bindConverter(ids, converterFunc){
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el){
+          el.addEventListener('input', converterFunc);
+          el.addEventListener('change', converterFunc);
+        }
+      });
+    }
+
+    // Bind all converters' controls
+    bindConverter(['curAmount','curFrom','curTo'], convertCurrency);
+    bindConverter(['lenAmount','lenFrom','lenTo'], () => convertGeneric('lenAmount','lenFrom','lenTo', lengthUnits, 'lengthOutput'));
+    bindConverter(['massAmount','massFrom','massTo'], () => convertGeneric('massAmount','massFrom','massTo', massUnits, 'massOutput'));
+    bindConverter(['areaAmount','areaFrom','areaTo'], () => convertGeneric('areaAmount','areaFrom','areaTo', areaUnits, 'areaOutput'));
+    bindConverter(['timeAmount','timeFrom','timeTo'], () => convertGeneric('timeAmount','timeFrom','timeTo', timeUnits, 'timeOutput'));
+    bindConverter(['dataAmount','dataFrom','dataTo'], () => convertGeneric('dataAmount','dataFrom','dataTo', dataUnits, 'dataOutput'));
+    bindConverter(['discountPrice','discountPercent'], calculateDiscount);
+    bindConverter(['volAmount','volFrom','volTo'], () => convertGeneric('volAmount','volFrom','volTo', volumeUnits, 'volumeOutput'));
+    bindConverter(['numInput','numFrom','numTo'], convertNumeral);
+    bindConverter(['speedAmount','speedFrom','speedTo'], () => convertGeneric('speedAmount','speedFrom','speedTo', speedUnits, 'speedOutput'));
+    bindConverter(['tempAmount','tempFrom','tempTo'], convertTemp);
+    bindConverter(['bmiWeight','bmiHeight'], calculateBMI);
+    bindConverter(['gstPrice','gstPercent'], calculateGST);
+
+    // Initialize outputs with placeholder texts
+    convertCurrency();
+    convertGeneric('lenAmount','lenFrom','lenTo', lengthUnits, 'lengthOutput');
+    convertGeneric('massAmount','massFrom','massTo', massUnits, 'massOutput');
+    convertGeneric('areaAmount','areaFrom','areaTo', areaUnits, 'areaOutput');
+    convertGeneric('timeAmount','timeFrom','timeTo', timeUnits, 'timeOutput');
+    convertGeneric('dataAmount','dataFrom','dataTo', dataUnits, 'dataOutput');
+    calculateDiscount();
+    convertGeneric('volAmount','volFrom','volTo', volumeUnits, 'volumeOutput');
+    convertNumeral();
+    convertGeneric('speedAmount','speedFrom','speedTo', speedUnits, 'speedOutput');
+    convertTemp();
+    calculateBMI();
+    calculateGST();
+
+    // Accessibility: enable keyboard navigation for tabs
+    let focusIndex = 0;
+    const maxIndex = tabs.length -1;
+    tabs.forEach( (tab, i) => {
+      tab.addEventListener('keydown', e => {
+        if(e.key === 'ArrowRight'){
+          focusIndex = (i+1) > maxIndex ? 0 : i+1;
+          tabs[focusIndex].focus();
+          tabs[focusIndex].click();
+          e.preventDefault();
+        } else if(e.key === 'ArrowLeft'){
+          focusIndex = (i-1) < 0 ? maxIndex : i-1;
+          tabs[focusIndex].focus();
+          tabs[focusIndex].click();
+          e.preventDefault();
+        }
+      });
+    });
+  })();
+
+</script>
+</body>
+</html>
+
